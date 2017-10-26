@@ -71,9 +71,17 @@ else
     Wdot_T2 = 100E6; % [W]
 end
 
-% Pressure drops in heat exchanger
-deltaP_1 = 0;
-deltaP_2 = 0;
+% Pressure drops in heat exchangers
+if isfield(input,'deltaP_1')
+    deltaP_1 = input.deltaP_1;
+else
+    deltaP_1 = 0;
+end
+if isfield(input,'deltaP_2')
+    deltaP_2 = input.deltaP_2;
+else
+    deltaP_2 = 0;
+end
 
 % Mass flowrate
 if isfield(input,'mdot')
