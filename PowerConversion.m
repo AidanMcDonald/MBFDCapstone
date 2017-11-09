@@ -1,23 +1,32 @@
 function output = PowerConversion(input)
+% This function calculates the temperatures and pressures in a combined.
+% Inputs can be single values for steady state operation or a vector in
+% time for transient operation.
+% Authors: Aidan McDonald
+
+% Check if given an input time vector
 if isfield(input,'t')
     t = input.t;
 else
     t = [0];
 end
 
+% Initialize state object to empty structure array
 state = struct();
 
-
-for i = 1:length(t)
-    fields = fieldnames(state);
-    if ~t(i)==1
+for i = 1:length(t) % Loop through time vector
+    fields = fieldnames(state); % Get all fields present in state
+    if ~(i==1) % If we arent at the first point
         for j = 1:numel(fields)
-            state.(fields{j})(i) = state.(fields{j})(i-1);
+            state.(fields{j})(i) = state.(fields{j})(i-1); % Shift all state variables forward (to get inputs. Variables that change will be overwritten later)
         end
     end
     
     %% Update Brayton cycle states at time i
     % Assemble input for Brayton function
+    % For each possible input, check if we have it, and if so, check that
+    % it has the correct length. If it doesn't, spit out a warning and use
+    % the default.
     braytonInput = struct();
     if isfield(input,'B_beta')
         if length(input.B_beta)==length(t)
@@ -153,6 +162,7 @@ for i = 1:length(t)
     braytonOutput = Brayton(braytonInput);
     
     % Update state variables at t(i) with output from Brayton function
+    % Overwrite old values
     state.B_P_1(i) = braytonOutput.P_1;
     state.B_T_1(i) = braytonOutput.T_1;
     state.B_P_2(i) = braytonOutput.P_2;
@@ -168,6 +178,9 @@ for i = 1:length(t)
     
     %% Update Rankine cycle states at time i
     % Assemble input for Rankine function
+    % For each possible input, check if we have it, and if so, check that
+    % it has the correct length. If it doesn't, spit out a warning and use
+    % the default.
     rankineInput = struct();
     
     if(isfield(input,'R_P_5'))
@@ -219,10 +232,20 @@ for i = 1:length(t)
             warning('Invalid input: Input for R_eta_P has different length than t. Must be a scalar or a vector with length = length(t). It has been set to default value.')
         end
     end
+    
+    rankineInput.T_air,in = braytonOutput.T_6;
+    
+    if(isfield(input,'R_deltaT_pp')
+        rankineInput.deltaT_pp = input.R_deltaT_pp; % [K]
+    else
+        rankineInput.deltaT_pp = 25; % [K]
+    end
+    
     % Run Rankine function
     rankineOutput = Rankine(rankineInput);
     
     % Update state(i) with output from Rankine function
+    % Overwrite old values
     state.R_P_1(i) = rankineOutput.P_1;
     state.R_T_1(i) = rankineOutput.T_1;
     state.R_h_1(i) = rankineOutput.h_1;
@@ -237,6 +260,7 @@ for i = 1:length(t)
     state.R_h_6(i) = rankineOutput.h_6;
     
 end
+% Put time vector into output
 state.t = t;
 output = state;
 end

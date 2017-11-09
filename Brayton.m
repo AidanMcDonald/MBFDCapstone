@@ -11,8 +11,8 @@ else
     beta = 20;
 end
 
-% Don't know the name of this one
-gamma = (1.4-1)/1.4; % or something like that
+% Gamma of air - intrinsic property of air
+gamma = (1.4-1)/1.4;
 
 % Atmospheric incoming air
 if isfield(input,'P_1')
