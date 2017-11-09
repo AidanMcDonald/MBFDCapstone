@@ -108,13 +108,13 @@ A = [c_p_core*m_HS 0 0 0 0 0 0 0;
      0 0 0 0 0 .5*c_p_c*m_P .5*c_p_c*m_P 0;
      0 0 0 0 0 0 .5*c_p_c*m_CL2 .5*c_p_c*m_CL2];
 B = [U_HS*A_HS -.5*U_HS*A_HS 0 0 0 0 0 -.5*U_HS*A_HS;
-     -U_HS*A_HS mdot_HE1*c_p_c*m_HE1+.5*U_HS*A_HS 0 0 0 0 0 -mdot_HE1*c_p_c*m_HE1+.5*U_HS*A_HS;
-     0 .5*U_pipe*A_pipe-mdot_HL*c_p_c*m_HL .5*U_pipe*A_pipe+mdot_HL*c_p_c*m_HL 0 0 0 0 0;
-     0 0 .5*U_CS*A_CS-mdot_HE2*c_p_c*m_HE2 .5*U_CS*A_CS+mdot_HE2*c_p_c*m_HE2 -U_CS*A_CS 0 0 0;
+     -U_HS*A_HS mdot_HE1*c_p_c+.5*U_HS*A_HS 0 0 0 0 0 -mdot_HE1*c_p_c+.5*U_HS*A_HS;
+     0 .5*U_pipe*A_pipe-mdot_HL*c_p_c .5*U_pipe*A_pipe+mdot_HL*c_p_c 0 0 0 0 0;
+     0 0 .5*U_CS*A_CS-mdot_HE2*c_p_c .5*U_CS*A_CS+mdot_HE2*c_p_c -U_CS*A_CS 0 0 0;
      0 0 -.5*U_CS*A_CS -.5*U_CS*A_CS U_CS*A_CS 0 0 0;
-     0 0 0 .5*U_pipe*A_pipe-mdot_CL1*c_p_c*m_CL1 0 .5*U_pipe*A_pipe+mdot_CL1*c_p_c*m_CL1 0 0;
-     0 0 0 0 0 -mdot_P*c_p_c*m_P mdot_P*c_p_c*m_P 0;
-     0 0 0 0 0 0 .5*U_pipe*A_pipe-mdot_CL2*c_p_c*m_CL2 .5*U_pipe*A_pipe+mdot_CL2*c_p_c*m_CL2];
+     0 0 0 .5*U_pipe*A_pipe-mdot_CL1*c_p_c 0 .5*U_pipe*A_pipe+mdot_CL1*c_p_c 0 0;
+     0 0 0 0 0 -mdot_P*c_p_c mdot_P*c_p_c 0;
+     0 0 0 0 0 0 .5*U_pipe*A_pipe-mdot_CL2*c_p_c .5*U_pipe*A_pipe+mdot_CL2*c_p_c];
 C = [-P_in;
      0;
      -U_pipe*A_pipe*T_air;
@@ -125,7 +125,7 @@ C = [-P_in;
      -U_pipe*A_pipe*T_air];
  
  % Solve for T'
- T_prime = inv(A)*(-C-B*T);
+ T_prime = A\(-C-B*T);
  
  % Step T values forward using Euler method
  T_nplus1 = T+dt*T_prime;
