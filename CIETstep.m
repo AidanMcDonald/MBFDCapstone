@@ -98,6 +98,10 @@ Qdot_pump = ;
 % Ambient air temperature
 T_air = ;
 
+% specific heat capacities dependence on T and material
+c_p_core = @(T) 450 + 0.28*(T-273); %T is in K
+c_p_c = @(T) 1518 + 2.82.*(T-273) %T is in K
+
 %% Perform Calculations
 % Define matrices for AT'+BT+C=0 form
 A = [c_p_core*m_HS 0 0 0 0 0 0 0;
