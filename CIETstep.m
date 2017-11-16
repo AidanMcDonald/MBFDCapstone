@@ -1,12 +1,13 @@
 function T_nplus1 = CIETstep(input)
-% Questions for Yi Meng + Priya:
-% Difference between m and mdot?
-% difference between c_p and C_p? I.E. is C_p_c = mass of coolant in the
-%   section times c_p_c?
+% This function takes temperatures in CIET at a time t_n and calculates the
+% temperatures at the next time t_n+1
 
 %% Read input/set constants
 % time step
 dt = input.dt;
+
+% Density as a function of temperature
+rho = @(T) = ;
 
 % Temperatures at previous t
 T = input.T;
