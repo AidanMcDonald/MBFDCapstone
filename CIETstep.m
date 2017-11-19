@@ -10,37 +10,64 @@ dt = input.dt;
 rho = @(T) = ;
 
 % Temperatures at previous t
+% Elements of T:
+% T(1) = T_HS = Temperature of heat source
+% T(2) = T_HE1 = Temperature in hot heat exchanger
+% T(3) = T_HL = Temperature in hot leg piping
+% T(4) = T_HE2 = Temperature in cold heat exchanger
+% T(5) = T_CS = Temperature of the cold sink
+% T(6) = T_CL1 = Temperature of the cold leg before pump
+% T(7) = T_P = Temperature at the pump
+% T(8) = T_CL2 = Temperature in cold leg after pump
 T = input.T;
 
-% Specific heat capacity of heat source/core
-c_p_core = ;
+% Volume of heat source unit
+V_HS = rho(T(1)*V_HS);
 
-% Specific heat capacity of coolant/oil
-c_p_c = ;
+% Volume of Heat Exchanger 1 unit
+V_HE1 = rho(T(2)*V_HE1);
+
+% Volume of hot leg unit
+V_HL = rho(T(3)*V_HL);
+
+% Volume of heat exchanger 2 unit
+V_HE2 = rho(T(4)*V_HE2);
+
+% Volume of cold sink unit
+V_CS = rho(T(5)*V_CS);
+
+% Volume of cold leg 1 unit
+V_CL1 = rho(T(6)*V_CL1);
+
+% Volume of pump unit
+V_P = rho(T(7)*V_P);
+
+% Volume of cold leg 2 unit
+V_CL2 = rho(T(8)*V_CL2);
 
 % Mass in heat source unit
-m_HS = ;
+m_HS = rho(T(1)*V_HS);
 
 % Mass in Heat Exchanger 1 unit
-m_HE1 = ;
+m_HE1 = rho(T(2)*V_HE1);
 
 % Mass in hot leg unit
-m_HL = ;
+m_HL = rho(T(3)*V_HL);
 
 % Mass in heat exchanger 2 unit
-m_HE2 = ;
+m_HE2 = rho(T(4)*V_HE2);
 
 % Mass in cold sink unit
-m_CS = ;
+m_CS = rho(T(5)*V_CS);
 
 % Mass in cold leg 1 unit
-m_CL1 = ;
+m_CL1 = rho(T(6)*V_CL1);
 
 % Mass in pump unit
-m_P = ;
+m_P = rho(T(7)*V_P);
 
 % Mass in cold leg 2 unit
-m_CL2 = ;
+m_CL2 = rho(T(8)*V_CL2);
 
 % Mass flowrate in heat source unit
 mdot_HS = ;
@@ -99,19 +126,30 @@ Qdot_pump = ;
 T_air = ;
 
 % specific heat capacities dependence on T and material
-c_p_core = @(T) 450 + 0.28*(T-273); %T is in K
-c_p_c = @(T) 1518 + 2.82.*(T-273) %T is in K
+F_c_p_core = @(T) 450 + 0.28*(T-273); % T in K
+F_c_p_c = @(T) 1518 + 2.82*(T-273) % T in K
+
+% specific heat capacities in control volumes
+c_p_core = F_c_p_core(T(1));
+c_p_c_HE1 = F_c_p_c(T(2));
+c_p_c_HL = F_c_p_c(T(3));
+c_p_c_HE2 = F_c_p_c(T(4));
+c_p_c_CS = F_c_p_c(T(5));
+c_p_c_CL1 = F_c_p_c(T(6));
+c_p_c_P = F_c_p_c(T(7));
+c_p_c_CL2 = F_c_p_c(T(8));
+
 
 %% Perform Calculations
 % Define matrices for AT'+BT+C=0 form
 A = [c_p_core*m_HS 0 0 0 0 0 0 0;
-     0 .5*c_p_c 0 0 0 0 0 .5*c_p_c*m_HE1;
-     0 .5*c_p_c*m_HL .5*c_p_c*m_HL 0 0 0 0 0;
-     0 0 .5*c_p_c*m_HE2 .5*c_p_c*m_HE2 0 0 0 0;
-     0 0 0 0 c_p_c*m_CS 0 0 0;
-     0 0 0 .5*c_p_c*m_CL1 0 .5*c_p_c*m_CL1 0 0;
-     0 0 0 0 0 .5*c_p_c*m_P .5*c_p_c*m_P 0;
-     0 0 0 0 0 0 .5*c_p_c*m_CL2 .5*c_p_c*m_CL2];
+     0 .5*c_p_c_HE1 0 0 0 0 0 .5*c_p_c*m_HE1;
+     0 .5*c_p_c_HL*m_HL .5*c_p_c_HL*m_HL 0 0 0 0 0;
+     0 0 .5*c_p_c_HE2*m_HE2 .5*c_p_c_HE2*m_HE2 0 0 0 0;
+     0 0 0 0 c_p_c_CS*m_CS 0 0 0;
+     0 0 0 .5*c_p_c_CL1*m_CL1 0 .5*c_p_c_CL1*m_CL1 0 0;
+     0 0 0 0 0 .5*c_p_c_P*m_P .5*c_p_c_P*m_P 0;
+     0 0 0 0 0 0 .5*c_p_c_CL2*m_CL2 .5*c_p_c_CL2*m_CL2];
 B = [U_HS*A_HS -.5*U_HS*A_HS 0 0 0 0 0 -.5*U_HS*A_HS;
      -U_HS*A_HS mdot_HE1*c_p_c+.5*U_HS*A_HS 0 0 0 0 0 -mdot_HE1*c_p_c+.5*U_HS*A_HS;
      0 .5*U_pipe*A_pipe-mdot_HL*c_p_c .5*U_pipe*A_pipe+mdot_HL*c_p_c 0 0 0 0 0;
