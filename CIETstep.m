@@ -7,7 +7,7 @@ function T_nplus1 = CIETstep(input)
 dt = input.dt;
 
 % Density as a function of temperature
-rho = @(T) = ;
+rho = @(T) = 1078 - (0.85.*(T-273));
 
 % Temperatures at previous t
 % Elements of T:
@@ -70,28 +70,28 @@ m_P = rho(T(7)*V_P);
 m_CL2 = rho(T(8)*V_CL2);
 
 % Mass flowrate in heat source unit
-mdot_HS = ;
+mdot_HS = 0.18; %kg/s
 
 % Mass flowrate in Heat Exchanger 1 unit
-mdot_HE1 = ;
+mdot_HE1 = 0.18;
 
 % Mass flowrate in hot leg unit
-mdot_HL = ;
+mdot_HL = 0.18;
 
 % Mass flowrate in heat exchanger 2 unit
-mdot_HE2 = ;
+mdot_HE2 = 0.18;
 
 % Mass flowrate in cold sink unit
-mdot_CS = ;
+mdot_CS = 0.18;
 
 % Mass flowrate in cold leg 1 unit
-mdot_CL1 = ;
+mdot_CL1 = 0.18;
 
 % Mass flowrate in pump unit
-mdot_P = ;
+mdot_P = 0.18;
 
 % Mass flowrate in cold leg 2 unit
-mdot_CL2 = ;
+mdot_CL2 = 0.18;
 
 % Thermal conductivity of the heat source unit
 U_HS = ;
@@ -100,15 +100,19 @@ U_HS = ;
 A_HS = ;
 
 % Thermal conductivity of pipelines for heat losses to surrounding air in 
-% HL, CL 1 and CL2 units. Assume that all the pipes have the same thermal properties
-U_pipe = ;
+% HL, CL 1 and CL2 units. Assume that all the pipes have the same thermal properties. 
+%Assume that the thermal resistances are dominated by the 5.08 cm insulation 
+U_pipe = 1/(0.90923*pi*0.0279);
 
 % Effective surface area of pipes for heat losses to surrounding air in 
 % HL, CL 1 and CL2 units. Assume that all the pipes have the same thermal properties.
+%This is the total surface area using the uninsulated radius
 A_pipe = ;
 
+
+
 % Thermal conductivity of the cold sink unit
-U_CS = ;
+U_CS = 1/(0.90923*pi*0.0279);
 
 % Effective surface area of the cold sink unit
 A_CS = ;
