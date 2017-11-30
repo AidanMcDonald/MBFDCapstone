@@ -33,26 +33,24 @@ T = input.T;
 
 % Volumes -----------------------------------
 % Volume of Heat Exchanger 1 unit
-V_HE1 = ;
+V_HE1 = 2E-3;
 
 % Volume of hot leg unit
-V_HL = ;
+V_HL = 2.01E-3; % m^3
 
 % Volume of heat exchanger 2 unit
-V_HE2 = ;
+V_HE2 = 2.08E-3; % m^3
 
 % Volume of cold leg 1 unit
-V_CL1 = ;
+V_CL1 = 2.77E-3; % m^3
 
 % Volume of pump unit
-V_P = ;
+V_P = 2.37E-4; % m^3
 
 % Volume of cold leg 2 unit
-V_CL2 = ;
+V_CL2 = 2.49E-3; % m^3
 
 % Masses ----------------------------------
-% Mass in heat source unit
-m_HS = rho(T(1)*V_HS);
 
 % Mass in Heat Exchanger 1 unit
 m_HE1 = rho(T(2)*V_HE1);
@@ -62,9 +60,6 @@ m_HL = rho(T(3)*V_HL);
 
 % Mass in heat exchanger 2 unit
 m_HE2 = rho(T(4)*V_HE2);
-
-% Mass in cold sink unit
-m_CS = rho(T(5)*V_CS);
 
 % Mass in cold leg 1 unit
 m_CL1 = rho(T(6)*V_CL1);
@@ -77,22 +72,22 @@ m_CL2 = rho(T(8)*V_CL2);
 
 % Mass flowrates --------------------------------
 % Mass flowrate in Heat Exchanger 1 unit
-mdot_HE1 = ;
+mdot_HE1 = input.mdot; % kg/s
 
 % Mass flowrate in hot leg unit
-mdot_HL = ;
+mdot_HL = input.mdot; % kg/s
 
 % Mass flowrate in heat exchanger 2 unit
-mdot_HE2 = ;
+mdot_HE2 = input.mdot; % kg/s
 
 % Mass flowrate in cold leg 1 unit
-mdot_CL1 = ;
+mdot_CL1 = input.mdot; % kg/s
 
 % Mass flowrate in pump unit
-mdot_P = ;
+mdot_P = input.mdot; % kg/s
 
 % Mass flowrate in cold leg 2 unit
-mdot_CL2 = ;
+mdot_CL2 = input.mdot; % kg/s
 
 % Heat transfer coefficients ---------------------------------
 % Thermal conductivity of the heat source unit
@@ -107,13 +102,15 @@ U_pipe = 1/(0.90923*pi*0.0279); % W/(m^2 K)
 
 % Effective surface area of pipes for heat losses to surrounding air in 
 % HL, CL 1 and CL2 units. Assume that all the pipes have the same thermal properties.
-A_pipe = 3; % Arbitrarily chosen, in m^2
+A_HL = 2.9E-1; % m^2
+A_CL1 = 3.97E-1; % m^2
+A_CL2 = 3.60E-1; % m^2
 
 % Thermal conductivity of the cold sink unit
 U_CS = 1/(0.90923*pi*0.0279); % W/(m^2 K)
 
 % Effective surface area of the cold sink unit
-A_CS = 1; % Arbirarily chosen, in m^2
+A_CS = 2.02E-1; % m^2
 
 % Ambient air temperature
 T_air = 273+22; % K
@@ -136,30 +133,32 @@ c_p_c_CL2 = F_c_p_c(T(8));
 
 %% Perform Calculations
 % Define matrices for AT'+BT+C=0 form
-A = [c_p_core*m_HS 0 0 0 0 0 0 0;
-     0 .5*c_p_c_HE1 0 0 0 0 0 .5*c_p_c*m_HE1;
+A = [c_p_core*m_HE1 0 0 0 0 0 0 0;
+     0 .5*c_p_c_HE1 0 0 0 0 0 .5*c_p_c_HE1*m_HE1;
      0 .5*c_p_c_HL*m_HL .5*c_p_c_HL*m_HL 0 0 0 0 0;
      0 0 .5*c_p_c_HE2*m_HE2 .5*c_p_c_HE2*m_HE2 0 0 0 0;
-     0 0 0 0 c_p_c_CS*m_CS 0 0 0;
+     0 0 0 0 c_p_c_CS*m_HE2 0 0 0;
      0 0 0 .5*c_p_c_CL1*m_CL1 0 .5*c_p_c_CL1*m_CL1 0 0;
      0 0 0 0 0 .5*c_p_c_P*m_P .5*c_p_c_P*m_P 0;
      0 0 0 0 0 0 .5*c_p_c_CL2*m_CL2 .5*c_p_c_CL2*m_CL2];
+
 B = [U_HS*A_HS -.5*U_HS*A_HS 0 0 0 0 0 -.5*U_HS*A_HS;
-     -U_HS*A_HS mdot_HE1*c_p_c+.5*U_HS*A_HS 0 0 0 0 0 -mdot_HE1*c_p_c+.5*U_HS*A_HS;
-     0 .5*U_pipe*A_pipe-mdot_HL*c_p_c .5*U_pipe*A_pipe+mdot_HL*c_p_c 0 0 0 0 0;
-     0 0 .5*U_CS*A_CS-mdot_HE2*c_p_c .5*U_CS*A_CS+mdot_HE2*c_p_c -U_CS*A_CS 0 0 0;
+     -U_HS*A_HS mdot_HE1*c_p_c_HE1+.5*U_HS*A_HS 0 0 0 0 0 -mdot_HE1*c_p_c_HE1+.5*U_HS*A_HS;
+     0 .5*U_pipe*A_HL-mdot_HL*c_p_c_HL .5*U_pipe*A_HL+mdot_HL*c_p_c_HL 0 0 0 0 0;
+     0 0 .5*U_CS*A_CS-mdot_HE2*c_p_c_HE2 .5*U_CS*A_CS+mdot_HE2*c_p_c_HE2 -U_CS*A_CS 0 0 0;
      0 0 -.5*U_CS*A_CS -.5*U_CS*A_CS U_CS*A_CS 0 0 0;
-     0 0 0 .5*U_pipe*A_pipe-mdot_CL1*c_p_c 0 .5*U_pipe*A_pipe+mdot_CL1*c_p_c 0 0;
-     0 0 0 0 0 -mdot_P*c_p_c mdot_P*c_p_c 0;
-     0 0 0 0 0 0 .5*U_pipe*A_pipe-mdot_CL2*c_p_c .5*U_pipe*A_pipe+mdot_CL2*c_p_c];
-C = [-P_in;
+     0 0 0 .5*U_pipe*A_CL1-mdot_CL1*c_p_c_CL1 0 .5*U_pipe*A_CL1+mdot_CL1*c_p_c_CL1 0 0;
+     0 0 0 0 0 -mdot_P*c_p_c_P mdot_P*c_p_c_P 0;
+     0 0 0 0 0 0 .5*U_pipe*A_CL2-mdot_CL2*c_p_c_P .5*U_pipe*A_CL2+mdot_CL2*c_p_c_P];
+
+ C = [-P_in;
      0;
-     -U_pipe*A_pipe*T_air;
+     -U_pipe*A_HL*T_air;
      0;
      P_reject;
-     -U_pipe*A_pipe*T_air;
+     -U_pipe*A_CL1*T_air;
      -Qdot_pump;
-     -U_pipe*A_pipe*T_air];
+     -U_pipe*A_CL2*T_air];
  
  % Solve for T'
  T_prime = A\(-C-B*T);
