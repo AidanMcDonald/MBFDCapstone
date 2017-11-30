@@ -7,7 +7,17 @@ function T_nplus1 = CIETstep(input)
 dt = input.dt;
 
 % Density as a function of temperature
-rho = @(T) = ;
+rho = @(T) ;
+
+% Controllable inputs -------------------------------
+% Power flux from heat source (+ve is energy into system)
+P_in = input.P_in;
+
+% Power flux into cold sink (+ve is energy taken away from system)
+P_reject = input.P_reject;
+
+% Heat flux from pump
+Qdot_pump = input.Qdot_pump;
 
 % Temperatures at previous t
 % Elements of T:
@@ -21,30 +31,26 @@ rho = @(T) = ;
 % T(8) = T_CL2 = Temperature in cold leg after pump
 T = input.T;
 
-% Volume of heat source unit
-V_HS = rho(T(1)*V_HS);
-
+% Volumes -----------------------------------
 % Volume of Heat Exchanger 1 unit
-V_HE1 = rho(T(2)*V_HE1);
+V_HE1 = ;
 
 % Volume of hot leg unit
-V_HL = rho(T(3)*V_HL);
+V_HL = ;
 
 % Volume of heat exchanger 2 unit
-V_HE2 = rho(T(4)*V_HE2);
-
-% Volume of cold sink unit
-V_CS = rho(T(5)*V_CS);
+V_HE2 = ;
 
 % Volume of cold leg 1 unit
-V_CL1 = rho(T(6)*V_CL1);
+V_CL1 = ;
 
 % Volume of pump unit
-V_P = rho(T(7)*V_P);
+V_P = ;
 
 % Volume of cold leg 2 unit
-V_CL2 = rho(T(8)*V_CL2);
+V_CL2 = ;
 
+% Masses ----------------------------------
 % Mass in heat source unit
 m_HS = rho(T(1)*V_HS);
 
@@ -69,9 +75,7 @@ m_P = rho(T(7)*V_P);
 % Mass in cold leg 2 unit
 m_CL2 = rho(T(8)*V_CL2);
 
-% Mass flowrate in heat source unit
-mdot_HS = ;
-
+% Mass flowrates --------------------------------
 % Mass flowrate in Heat Exchanger 1 unit
 mdot_HE1 = ;
 
@@ -80,9 +84,6 @@ mdot_HL = ;
 
 % Mass flowrate in heat exchanger 2 unit
 mdot_HE2 = ;
-
-% Mass flowrate in cold sink unit
-mdot_CS = ;
 
 % Mass flowrate in cold leg 1 unit
 mdot_CL1 = ;
@@ -93,41 +94,34 @@ mdot_P = ;
 % Mass flowrate in cold leg 2 unit
 mdot_CL2 = ;
 
+% Heat transfer coefficients ---------------------------------
 % Thermal conductivity of the heat source unit
-U_HS = ;
+U_HS = 1000; % Arbitrarily chosen, in W/(m^2 K)
 
 % Effective surface area of the heat source unit
-A_HS = ;
+A_HS = 1; % Arbirarily chosen, in m^2
 
 % Thermal conductivity of pipelines for heat losses to surrounding air in 
 % HL, CL 1 and CL2 units. Assume that all the pipes have the same thermal properties
-U_pipe = ;
+U_pipe = 10; % Arbitrarily chosen, in W/(m^2 K)
 
 % Effective surface area of pipes for heat losses to surrounding air in 
 % HL, CL 1 and CL2 units. Assume that all the pipes have the same thermal properties.
-A_pipe = ;
+A_pipe = 3; % Arbitrarily chosen, in m^2
 
 % Thermal conductivity of the cold sink unit
-U_CS = ;
+U_CS = 1000; % Arbitrarily chosen, in W/(m^2 K)
 
 % Effective surface area of the cold sink unit
-A_CS = ;
-
-% Power flux from heat source (+ve is energy into system)
-P_in = ;
-
-% Power flux into cold sink (+ve is energy taken away from system)
-P_reject = ;
-
-% Heat flux from pump
-Qdot_pump = ;
+A_CS = 1; % Arbirarily chosen, in m^2
 
 % Ambient air temperature
-T_air = ;
+T_air = 273+22; % K
 
+% Specific heat capacities ----------------------------------
 % specific heat capacities dependence on T and material
 F_c_p_core = @(T) 450 + 0.28*(T-273); % T in K
-F_c_p_c = @(T) 1518 + 2.82*(T-273) % T in K
+F_c_p_c = @(T) 1518 + 2.82*(T-273); % T in K
 
 % specific heat capacities in control volumes
 c_p_core = F_c_p_core(T(1));
