@@ -7,7 +7,7 @@ function T_nplus1 = CIETstep(input)
 dt = input.dt;
 
 % Density as a function of temperature
-rho = @(T) ;
+rho = @(T) 1078 - (0.85.*(T-273)); %K
 
 % Controllable inputs -------------------------------
 % Power flux from heat source (+ve is energy into system)
@@ -103,14 +103,14 @@ A_HS = 1; % Arbirarily chosen, in m^2
 
 % Thermal conductivity of pipelines for heat losses to surrounding air in 
 % HL, CL 1 and CL2 units. Assume that all the pipes have the same thermal properties
-U_pipe = 10; % Arbitrarily chosen, in W/(m^2 K)
+U_pipe = 1/(0.90923*pi*0.0279); % W/(m^2 K)
 
 % Effective surface area of pipes for heat losses to surrounding air in 
 % HL, CL 1 and CL2 units. Assume that all the pipes have the same thermal properties.
 A_pipe = 3; % Arbitrarily chosen, in m^2
 
 % Thermal conductivity of the cold sink unit
-U_CS = 1000; % Arbitrarily chosen, in W/(m^2 K)
+U_CS = 1/(0.90923*pi*0.0279); % W/(m^2 K)
 
 % Effective surface area of the cold sink unit
 A_CS = 1; % Arbirarily chosen, in m^2
