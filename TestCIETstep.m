@@ -2,7 +2,7 @@ clear all;
 close all;
 
 tstart = tic;
-numSteps = 1000000;
+numSteps = 100000;
 a.T = [200;102;101;80;20;80;80;79] + 273;
 %a.T = [290;290;290;290;290;290;290;290];
 
@@ -10,7 +10,13 @@ for i = 1:numSteps
 a.dt = .01;
 a.mdot = 0.18;
 a.P_in = 8000;
-a.P_reject = 7900;
+
+if (i < numSteps/2)
+    a.P_reject = 7900;
+else
+    a.P_reject = 0;
+end
+
 a.Qdot_pump = 100;
 
 newT = CIETstep(a);
