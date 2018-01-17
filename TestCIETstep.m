@@ -4,6 +4,9 @@ close all;
 tstart = tic;
 numSteps = 100000;
 a.T = [200;102;101;80;20;80;80;79] + 273;
+% start heater fluid temps as linearly increasing from 79 to 102, heater temps as linearly decreasing from 200 to 190 
+for i = 1:10
+    a.T_heater(i,:) = [200-i, (79+i*(102-79)/10]; 
 %a.T = [290;290;290;290;290;290;290;290];
 
 for i = 1:numSteps

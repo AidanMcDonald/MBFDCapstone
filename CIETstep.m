@@ -30,6 +30,13 @@ Qdot_pump = input.Qdot_pump;
 % T(7) = T_P = Temperature at the pump
 % T(8) = T_CL2 = Temperature in cold leg after pump
 T = input.T;
+% Hot heat exchanger temperatures
+% Elements of T_heater:
+% T_heater(1,:) = [T_heater_1 T_fluid_1]
+% T_heater(2,:) = [T_heater_2 T_fluid_2]
+% ...
+% T_heater(n,:) = [T_heater_n T_fluid_n]
+T_heater = input.T_heater;
 
 % Volumes -----------------------------------
 % Volume of Heat Exchanger 1 unit
@@ -117,8 +124,8 @@ T_air = 273+22; % K
 
 % Specific heat capacities ----------------------------------
 % specific heat capacities dependence on T and material
-F_c_p_core = @(T) 450 + 0.28*(T-273); % T in K
-F_c_p_c = @(T) 1518 + 2.82*(T-273); % T in K
+F_c_p_core = @(T) 450 + 0.28*(T-273); % For heating unit, T in K
+F_c_p_c = @(T) 1518 + 2.82*(T-273); % For dowtherm, T in K
 
 % specific heat capacities in control volumes
 c_p_core = F_c_p_core(T(1));
@@ -163,7 +170,16 @@ B = [U_HS*A_HS -.5*U_HS*A_HS 0 0 0 0 0 -.5*U_HS*A_HS;
  % Solve for T'
  T_prime = A\(-C-B*T);
  
- % Step T values forward using Euler method
+ %% Replace T'(1) and T'(2) with results from dT/dt_heater
+ % Change variables to dT_dt_heater naming convention
+ p_total = P_in;
+ mass_flow_fluid = mdot_HE1;
+ T_inlet = T(8); % = T_CL2
+ [dTdt_heater,dTdt_fluid] = dT_dt_heater(T_heater,T_inlet,p_total,mass_flow_fluid);
+ T_prime(1) = dTdt_heater;
+ T_prime(2) = dTdt_fluid;
+ 
+ %% Step T values forward using Euler method
  T_nplus1 = T+dt*T_prime;
 end
 
