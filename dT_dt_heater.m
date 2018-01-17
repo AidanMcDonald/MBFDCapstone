@@ -69,7 +69,7 @@ velocity = @(mass_flow_fluid,density,D_hydraulic) (mass_flow_fluid./density)/(pi
 %% Using central difference method to calculate d2T/dt2 and central point method requires i-2 and i+2 values. 
     d2T_dx2 = ones(n_segments,1);
     d2T_data = [T_heater(1);T_heater;T_heater(end)];
-   for i = 2:n_segments+1;
+   for i = 2:n_segments+1
     d2T_dx2 (i-1) = (-d2T_data(i+1)+2.*d2T_data(i)-d2T_data(i-1))/(x_step);
     end
     

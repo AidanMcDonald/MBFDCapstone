@@ -175,7 +175,10 @@ B = [U_HS*A_HS -.5*U_HS*A_HS 0 0 0 0 0 -.5*U_HS*A_HS;
  p_total = P_in;
  mass_flow_fluid = mdot_HE1;
  T_inlet = T(8); % = T_CL2
- [dTdt_heater,dTdt_fluid] = dT_dt_heater(T_heater,T_inlet,p_total,mass_flow_fluid);
+ temp = dT_dt_heater(T_heater,T_inlet,p_total,mass_flow_fluid);
+ dTdt_heater = temp(1);
+ dTdt_fluid = temp(2);
+ 
  T_prime(1) = dTdt_heater;
  T_prime(2) = dTdt_fluid;
  
