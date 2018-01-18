@@ -40,13 +40,13 @@ T_heater = input.T_heater;
 
 % Volumes -----------------------------------
 % Volume of Heat Exchanger 1 unit
-V_HE1 = 2E-3;
+V_HE1 = 2E-4;
 
 % Volume of hot leg unit
 V_HL = 2.01E-3; % m^3
 
 % Volume of heat exchanger 2 unit
-V_HE2 = 2.08E-3; % m^3
+V_HE2 = 2.08E-4; % m^3
 
 % Volume of cold leg 1 unit
 V_CL1 = 2.77E-3; % m^3

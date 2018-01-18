@@ -2,7 +2,7 @@ clear all;
 close all;
 
 tstart = tic;
-numSteps = 1000;
+numSteps = 7000;
 a.T = [200;102;101;80;80;80;80;79] + 273;
 % start heater fluid temps as linearly increasing from 79 to 102, heater temps as linearly decreasing from 200 to 190 
 for i = 1:10
@@ -13,10 +13,12 @@ end
 for i = 1:numSteps
 a.dt = .01;
 a.mdot = 0.18;
-a.P_in = 0;
-a.P_reject = 0;
-
-
+a.P_in = 8000;
+%a.P_reject = 1000; %This is a problem because in reality P_reject is limited by ambient air temperature
+a.P_reject = ((a.T(5) - 298)/(498)).*8000;
+if a.T(5)<300
+    a.P_reject = 0;
+end
 
 a.Qdot_pump = 100;
 
