@@ -76,7 +76,7 @@ velocity = @(mass_flow_fluid,density,D_hydraulic) (mass_flow_fluid./density)/(pi
 %% Convective resistance calculation
 Re = @(density, viscosity, velocity, length) density.*velocity.*length./viscosity;
 Pr = @(heat_capacity, viscosity, thermal_conductivity) heat_capacity.*viscosity./thermal_conductivity;
-Nu = @(Re,Pr) 0.024.*(Re.^0.8).*(Pr.^0.55); %Nu correlation for turbulent flow
+Nu = @(Re,Pr) 0.024.*(Re.^0.8).*(Pr.^0.552); %Nu correlation for turbulent flow
 %Nu = @(Re,Pr) 5.44 + 0.034.*(Re.^0.82).*(Pr.^0);
 
 Re_calc = Re(density_oil(T_fluid), viscosity_oil(T_fluid), velocity(mass_flow_fluid,density_oil(T_fluid),D_hydraulic), D_hydraulic);
@@ -92,7 +92,7 @@ h_radiative_calc = emissitivity_steel.*(5.67e-8).*((T_heater).^2 + T_air^2).*(T_
 %rate of accumulation of energy within heater = diffusion within heater in
 %x-direction + power source + convec heat loss to fluid + conduc heat loss to insulation-
 %iar + radiative heat loss
-dT_dt_heater = (1./(density_steel.*volume_heater.*c_p_steel(T_heater))).*((-A_ring.*k_steel(T_heater).*d2T_dx2) + p_profile - h_convec_calc.*A_HS.*(T_heater - T_fluid) - (U_insulation + h_radiative_calc).*A_insulation.*(T_heater - T_air));
+dT_dt_heater = (1./(density_steel.*volume_heater.*c_p_steel(T_heater))).*((-A_ring.*k_steel(T_heater).*d2T_dx2) + p_profile - h_convec_calc.*A_HS.*(T_heater - T_fluid));
 T_fluid_calc = [T_inlet; T_fluid(1:end-1)]; %This line is to calculate the thermal changes due to mass flow into CV
 heat_cap_fluid =  vol_fluid.*density_oil(T_fluid).*c_p_oil(T_fluid) + inner_assembly_mass*(c_p_steel(T_fluid));
 dT_dt_fluid = (1./heat_cap_fluid).*((mass_flow_fluid.*c_p_oil(T_fluid).*(T_fluid_calc-T_fluid)) + h_convec_calc.*A_HS.*(T_heater - T_fluid));

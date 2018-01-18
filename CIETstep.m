@@ -114,7 +114,7 @@ A_CL1 = 3.97E-1; % m^2
 A_CL2 = 3.60E-1; % m^2
 
 % Thermal conductivity of the cold sink unit
-U_CS = 1/(0.90923*pi*0.0279); % W/(m^2 K)
+U_CS = (1/(0.90923*pi*0.0279))*2000; % W/(m^2 K)
 
 % Effective surface area of the cold sink unit
 A_CS = 2.02E-1; % m^2
@@ -167,6 +167,7 @@ B = [U_HS*A_HS -.5*U_HS*A_HS 0 0 0 0 0 -.5*U_HS*A_HS;
      -Qdot_pump;
      -U_pipe*A_CL2*T_air];
  
+
  
  % Solve for T'
  T_prime = A\(-C-(B*T));
