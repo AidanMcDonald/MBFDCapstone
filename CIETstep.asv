@@ -137,6 +137,8 @@ c_p_c_CL1 = F_c_p_c(T(6));
 c_p_c_P = F_c_p_c(T(7));
 c_p_c_CL2 = F_c_p_c(T(8));
 
+% Assume pseudo-steady state
+
 %% Perform Calculations
 % Define matrices for AT'+BT+C=0 form
 A = [c_p_core*m_HE1 0 0 0 0 0 0 0;
