@@ -76,7 +76,7 @@ velocity = @(mass_flow_fluid,density,D_hydraulic) (mass_flow_fluid./density)/(pi
 %% Convective resistance calculation
 Re = @(density, viscosity, velocity, length) density.*velocity.*length./viscosity;
 Pr = @(heat_capacity, viscosity, thermal_conductivity) heat_capacity.*viscosity./thermal_conductivity;
-Nu = @(Re,Pr) 0.024.*(Re.^0.8).*(Pr.^0.33); %Nu correlation for turbulent flow
+Nu = @(Re,Pr) 0.024.*(Re.^0.8).*(Pr.^0.55); %Nu correlation for turbulent flow
 %Nu = @(Re,Pr) 5.44 + 0.034.*(Re.^0.82).*(Pr.^0);
 
 Re_calc = Re(density_oil(T_fluid), viscosity_oil(T_fluid), velocity(mass_flow_fluid,density_oil(T_fluid),D_hydraulic), D_hydraulic);

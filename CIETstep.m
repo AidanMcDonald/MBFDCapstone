@@ -60,22 +60,22 @@ V_CL2 = 2.49E-3; % m^3
 % Masses ----------------------------------
 
 % Mass in Heat Exchanger 1 unit
-m_HE1 = rho(T(2)*V_HE1);
+m_HE1 = rho(T(2))*V_HE1;
 
 % Mass in hot leg unit
-m_HL = rho(T(3)*V_HL);
+m_HL = rho(T(3))*V_HL;
 
 % Mass in heat exchanger 2 unit
-m_HE2 = rho(T(4)*V_HE2);
+m_HE2 = rho(T(4))*V_HE2;
 
 % Mass in cold leg 1 unit
-m_CL1 = rho(T(6)*V_CL1);
+m_CL1 = rho(T(6))*V_CL1;
 
 % Mass in pump unit
-m_P = rho(T(7)*V_P);
+m_P = rho(T(7))*V_P;
 
 % Mass in cold leg 2 unit
-m_CL2 = rho(T(8)*V_CL2);
+m_CL2 = rho(T(8))*V_CL2;
 
 % Mass flowrates --------------------------------
 % Mass flowrate in Heat Exchanger 1 unit
@@ -141,17 +141,17 @@ c_p_c_CL2 = F_c_p_c(T(8));
 %% Perform Calculations
 % Define matrices for AT'+BT+C=0 form
 A = [c_p_core*m_HE1 0 0 0 0 0 0 0;
-     0 .5*c_p_c_HE1 0 0 0 0 0 .5*c_p_c_HE1*m_HE1;
-     0 .5*c_p_c_HL*m_HL .5*c_p_c_HL*m_HL 0 0 0 0 0;
-     0 0 .5*c_p_c_HE2*m_HE2 .5*c_p_c_HE2*m_HE2 0 0 0 0;
+     0 c_p_c_HE1 0 0 0 0 0 0;
+     0 0 c_p_c_HL*m_HL 0 0 0 0 0;
+     0 0 0 c_p_c_HE2*m_HE2 0 0 0 0;
      0 0 0 0 c_p_c_CS*m_HE2 0 0 0;
-     0 0 0 .5*c_p_c_CL1*m_CL1 0 .5*c_p_c_CL1*m_CL1 0 0;
-     0 0 0 0 0 .5*c_p_c_P*m_P .5*c_p_c_P*m_P 0;
-     0 0 0 0 0 0 .5*c_p_c_CL2*m_CL2 .5*c_p_c_CL2*m_CL2];
+     0 0 0 0 0 c_p_c_CL1*m_CL1 0 0;
+     0 0 0 0 0 0 c_p_c_P*m_P 0;
+     0 0 0 0 0 0 0 c_p_c_CL2*m_CL2];
 
 B = [U_HS*A_HS -.5*U_HS*A_HS 0 0 0 0 0 -.5*U_HS*A_HS;
      -U_HS*A_HS mdot_HE1*c_p_c_HE1+.5*U_HS*A_HS 0 0 0 0 0 -mdot_HE1*c_p_c_HE1+.5*U_HS*A_HS;
-     0 .5*U_pipe*A_HL-mdot_HL*c_p_c_HL .5*U_pipe*A_HL+mdot_HL*c_p_c_HL 0 0 0 0 0;
+     0 (.5*U_pipe*A_HL)-(mdot_HL*c_p_c_HL) (.5*U_pipe*A_HL)+(mdot_HL*c_p_c_HL) 0 0 0 0 0;
      0 0 .5*U_CS*A_CS-mdot_HE2*c_p_c_HE2 .5*U_CS*A_CS+mdot_HE2*c_p_c_HE2 -U_CS*A_CS 0 0 0;
      0 0 -.5*U_CS*A_CS -.5*U_CS*A_CS U_CS*A_CS 0 0 0;
      0 0 0 .5*U_pipe*A_CL1-mdot_CL1*c_p_c_CL1 0 .5*U_pipe*A_CL1+mdot_CL1*c_p_c_CL1 0 0;
@@ -167,8 +167,9 @@ B = [U_HS*A_HS -.5*U_HS*A_HS 0 0 0 0 0 -.5*U_HS*A_HS;
      -Qdot_pump;
      -U_pipe*A_CL2*T_air];
  
+ 
  % Solve for T'
- T_prime = A\(-C-B*T);
+ T_prime = A\(-C-(B*T));
  
  %% Replace T'(1) and T'(2) with results from dT/dt_heater
  % Change variables to dT_dt_heater naming convention
@@ -176,14 +177,15 @@ B = [U_HS*A_HS -.5*U_HS*A_HS 0 0 0 0 0 -.5*U_HS*A_HS;
  mass_flow_fluid = mdot_HE1;
  T_inlet = T(8); % = T_CL2
  temp = dT_dt_heater(T_heater,T_inlet,p_total,mass_flow_fluid);
- dTdt_heater = temp(1);
- dTdt_fluid = temp(2);
+ %dTdt_heater = temp(1);
+ %dTdt_fluid = temp(2);
  
- T_prime(1) = dTdt_heater;
- T_prime(2) = dTdt_fluid;
+ %T_prime_heater_wall = dTdt_heater;
+ %T_prime_heater_fluid = dTdt_fluid;
  
  %% Step T values forward using Euler method
- T_nplus1 = T+dt*T_prime;
+ T_nplus1.T = T+dt*T_prime;
+ T_nplus1.T_heater = T_heater + dt*temp;
 end
 
 
