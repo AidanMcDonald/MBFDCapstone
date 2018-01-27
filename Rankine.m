@@ -17,8 +17,8 @@ end
 % Turbine inlet temp/heat exchanger output temp
 if(isfield(input,'T_4'))
     T_4 = input.T_4;
-elseif(isfield(input,'T_air,in') && isfield(input,'deltaT_pp'))
-    T_4 = input.T_air,in - deltaT_pp;
+elseif(isfield(input,'T_airIn') && isfield(input,'deltaT_pp'))
+    T_4 = input.T_airIn - input.deltaT_pp;
 else
     T_4 = 1000; % [K]
 end

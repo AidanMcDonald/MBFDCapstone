@@ -100,14 +100,19 @@ mdot_CL2 = input.mdot; % kg/s
 
 % DOESN'T MATTER
 % % Thermal conductivity of the heat source unit
-% U_HS = 1000; % Arbitrarily chosen, in W/(m^2 K)
+  U_HS = 1000; % Arbitrarily chosen, in W/(m^2 K)
 % 
-% % Effective surface area of the heat source unit
-% A_HS = 1; % Arbirarily chosen, in m^2
+%  % Effective surface area of the heat source unit
+  A_HS = 1; % Arbirarily chosen, in m^2
 
 % Thermal conductivity of pipelines for heat losses to surrounding air in 
 % HL, CL 1 and CL2 units. Assume that all the pipes have the same thermal properties
-U_pipe = 1/(0.90923*pi*0.0279); % W/(m^2 K)
+
+U_HL = 0.456; % W/m^2 K
+U_CL = 0.583; % W/m^2 K
+%U_HL = 1/(0.90923*pi*0.0279); % W/(m^2 K)
+%U_CL = 1/(0.90923*pi*0.0279); % W/(m^2 K)
+
 
 % Effective surface area of pipes for heat losses to surrounding air in 
 % HL, CL 1 and CL2 units. Assume that all the pipes have the same thermal properties.
@@ -152,23 +157,21 @@ A = [c_p_core*m_HE1 0 0 0 0 0 0 0;
 
 B = [U_HS*A_HS -.5*U_HS*A_HS 0 0 0 0 0 -.5*U_HS*A_HS;
      -U_HS*A_HS mdot_HE1*c_p_c_HE1+.5*U_HS*A_HS 0 0 0 0 0 -mdot_HE1*c_p_c_HE1+.5*U_HS*A_HS;
-     0 (.5*U_pipe*A_HL)-(mdot_HL*c_p_c_HL) (.5*U_pipe*A_HL)+(mdot_HL*c_p_c_HL) 0 0 0 0 0;
+     0 (.5*U_HL*A_HL)-(mdot_HL*c_p_c_HL) (.5*U_HL*A_HL)+(mdot_HL*c_p_c_HL) 0 0 0 0 0;
      0 0 .5*U_CS*A_CS-mdot_HE2*c_p_c_HE2 .5*U_CS*A_CS+mdot_HE2*c_p_c_HE2 -U_CS*A_CS 0 0 0;
      0 0 -.5*U_CS*A_CS -.5*U_CS*A_CS U_CS*A_CS 0 0 0;
-     0 0 0 .5*U_pipe*A_CL1-mdot_CL1*c_p_c_CL1 0 .5*U_pipe*A_CL1+mdot_CL1*c_p_c_CL1 0 0;
+     0 0 0 .5*U_CL*A_CL1-mdot_CL1*c_p_c_CL1 0 .5*U_CL*A_CL1+mdot_CL1*c_p_c_CL1 0 0;
      0 0 0 0 0 -mdot_P*c_p_c_P mdot_P*c_p_c_P 0;
-     0 0 0 0 0 0 .5*U_pipe*A_CL2-mdot_CL2*c_p_c_P .5*U_pipe*A_CL2+mdot_CL2*c_p_c_P];
+     0 0 0 0 0 0 .5*U_CL*A_CL2-mdot_CL2*c_p_c_P .5*U_CL*A_CL2+mdot_CL2*c_p_c_P];
 
  C = [-P_in;
      0;
-     -U_pipe*A_HL*T_air;
+     -U_HL*A_HL*T_air;
      0;
      P_reject;
-     -U_pipe*A_CL1*T_air;
+     -U_CL*A_CL1*T_air;
      -Qdot_pump;
-     -U_pipe*A_CL2*T_air];
- 
-
+     -U_CL*A_CL2*T_air];
  
  % Solve for T'
  T_prime = A\(-C-(B*T));

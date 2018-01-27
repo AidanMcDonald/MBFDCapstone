@@ -233,9 +233,9 @@ for i = 1:length(t) % Loop through time vector
         end
     end
     
-    rankineInput.T_air,in = braytonOutput.T_6;
+    rankineInput.T_airIn = braytonOutput.T_6;
     
-    if(isfield(input,'R_deltaT_pp')
+    if(isfield(input,'R_deltaT_pp'))
         rankineInput.deltaT_pp = input.R_deltaT_pp; % [K]
     else
         rankineInput.deltaT_pp = 25; % [K]
