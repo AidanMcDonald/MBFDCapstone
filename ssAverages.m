@@ -11,27 +11,31 @@ data = table2array(dataTable);
 % are for each steady state situation.
 ssCutoffs = [1 3 5 7 9; 2 4 6 8 10];
 ssData = cell(1,size(ssCutoffs,2));
+numSamples = zeros(1,size(ssCutoffs,2));
 
 for i = 1:size(ssCutoffs,2) % For each steady state condition
     ssData{i} = zeros(1,size(data,2));
     for j = ssCutoffs(1,i):ssCutoffs(2,i) % For each row of steady state data
+        % Add that row
         if j==1
-            ssData{i} = [data(j,:)]; % Add that row
+            ssData{i} = [data(j,:)]; 
         else
             ssData{i} = [ssData{i};data(j,:)];
         end
     end
+    numSamples(i) = ssCutoffs(2,i) - ssCutoffs(1,i) + 1; % Number of samples in each steady state condition
 end
 
+
 %% Analyze steady state data
-averages = cell(1,size(ssCutoffs,2)); % place to store averages and variances
+stats = cell(1,size(ssCutoffs,2)); % place to store averages and variances
 
 for i = 1:size(ssCutoffs,2) % For each steady state condition
-    tempAverages = zeros(2,size(ssData{i},2));
+    tempStats = zeros(2,size(ssData{i},2));
     tempssData = ssData{i};
     for j = 1:size(ssData{i},2) % For each sensor/variable
-        tempAverages(1,j) = mean(tempssData(:,j));
-        tempAverages(2,j) = var(tempssData(:,j));
+        tempStats(1,j) = mean(tempssData(:,j));
+        tempStats(2,j) = var(tempssData(:,j));
     end
-    averages{i} = tempAverages;
+    stats{i} = tempStats;
 end
