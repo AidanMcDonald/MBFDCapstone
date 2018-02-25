@@ -14,7 +14,7 @@ for i = 1:numSteps
 a.dt = .04;
 a.mdot = 0.18;
 a.P_in = 8000;
-a.P_reject = 7900; %This is a problem because in reality P_reject is limited by ambient air temperature
+a.P_reject = 7900; % This is a problem because in reality P_reject is limited by ambient air temperature
 %a.P_reject = ((a.T(4) - 358)/(398)).*8000;
 
 a.Qdot_pump = 100;
