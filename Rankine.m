@@ -6,12 +6,12 @@ function output = Rankine(input)
 if(isfield(input,'P_5'))
     P_5 = input.P_5;
 else
-    P_5 = 7093; % [Pa]                            %Modified
+    P_5 = 7093; % [Pa]
 end
 if(isfield(input,'P_1'))
     P_1 = input.P_1;
 else
-    P_1 = 6154480.5; % [Pa]                       %Modified
+    P_1 = 6154480.5; % [Pa]
 end
 
 % Turbine inlet temp/heat exchanger output temp
@@ -20,7 +20,7 @@ if(isfield(input,'T_4'))
 elseif(isfield(input,'T_air,in') && isfield(input,'deltaT_pp'))
     T_4 = input.T_air,in - deltaT_pp;
 else
-    T_4 = 549; % [K]                             %Modified
+    T_4 = 549; % [K]
 end
 
 % Turbine and pump efficiencies
