@@ -6,7 +6,7 @@ T_heater = T_wall_temp';
 T_fluid = T_fluid_temp';
 
 %% input resistive heater dimensions
-n_segments = 10;
+n_segments = 5;
 total_x = 1.924; %[m] Height of heater
 x_step = total_x/n_segments;
 x_profile = linspace(0,total_x,n_segments);
