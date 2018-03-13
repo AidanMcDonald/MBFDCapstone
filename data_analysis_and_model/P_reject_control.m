@@ -3,7 +3,7 @@ function output = P_reject_control(setpoint_temperature, T_cold_sink,T_hot_leg,m
 %set-point temperature, comparing it to the cold sink.
 
 c_p_oil = @(T) 1518 + 2.82.*(T-273); 
-
+  
 
 if T_cold_sink <= setpoint_temperature
     power_reject_needed = 0;
@@ -13,8 +13,8 @@ if T_cold_sink <= setpoint_temperature
 %in nature.
 else 
 power_reject_needed = mass_flow_oil.*(c_p_oil(0.5.*(T_hot_leg + setpoint_temperature))).*(T_hot_leg - setpoint_temperature);
-power_reject_divided_hot_oil_ambient = power_reject_needed./(T_hot_leg - (21+273));
-CTAH_frequency_needed = (power_reject_divided_hot_oil_ambient - 17.0729)./0.4228;
+power_reject_divided_hot_oil_ambient = power_reject_needed./(T_hot_leg - (21.711+273));
+CTAH_frequency_needed = (power_reject_divided_hot_oil_ambient - 17.072916739641418)./0.422809767053714;
 
 %output is the power rejection calculated using the P_reject and inputing
 %the desired frequency
