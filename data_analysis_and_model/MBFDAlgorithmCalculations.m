@@ -14,7 +14,9 @@ for i = 1:numel(P)
     load (filename)
     
     %BT-12 (HL-1)
+    
     A1 = data.BT_12;
+    A1(1:1000)=[]; %deleting first 1000 rows
     x1=max(A1);
     n1=min(A1);
     g1=mean(A1);
@@ -42,6 +44,7 @@ for i = 1:numel(P)
     
     %BT-43 (HL2)
     A2 = data.BT_43;
+    A2(1:1000)=[]; %deleting first 1000 rows
     x2=max(A2);
     n2=min(A2);
     g2=mean(A2);
@@ -69,6 +72,7 @@ for i = 1:numel(P)
     
     %BT-41 (CL1)
     A3 = data.BT_41;
+    A3(1:1000)=[]; %deleting first 1000 rows
     x3=max(A3);
     n3=min(A3);
     g3=mean(A3);
@@ -96,6 +100,7 @@ for i = 1:numel(P)
     
     %BT-11 (CL2)
     A4 = data.BT_11;
+    A4(1:1000)=[]; %deleting first 1000 rows
     x4=max(A4);
     n4=min(A4);
     g4=mean(A4);
@@ -121,20 +126,6 @@ for i = 1:numel(P)
     dTv4_storer(i)=dTv4;
     
 end
-
-m = 3; % average every m values
-z1 = arrayfun(@(i) mean(A1(i:i+m-1)),1:m:length(A1)-m+1)'; % vector by averaging every m elements
-z2 = arrayfun(@(i) mean(A2(i:i+m-1)),1:m:length(A2)-m+1)'; % vector by averaging every m elements
-z3 = arrayfun(@(i) mean(A3(i:i+m-1)),1:m:length(A3)-m+1)'; % vector by averaging every m elements
-z4 = arrayfun(@(i) mean(A4(i:i+m-1)),1:m:length(A4)-m+1)'; % vector by averaging every m elements
-t3=[1:1:numel(z1)];
-
-
-m = 10; % average every m values
-y1 = arrayfun(@(i) mean(dT1(i:i+m-1)),1:m:length(dT1)-m+1)'; % vector by averaging every m elements
-y2 = arrayfun(@(i) mean(dT2(i:i+m-1)),1:m:length(dT2)-m+1)'; % vector by averaging every m elements
-y3 = arrayfun(@(i) mean(dT3(i:i+m-1)),1:m:length(dT3)-m+1)'; % vector by averaging every m elements
-y4 = arrayfun(@(i) mean(dT4(i:i+m-1)),1:m:length(dT4)-m+1)'; % vector by averaging every m elements
 
 figure
 plot(P,v1_storer,P, v2_storer,P,v3_storer,P,v4_storer);
@@ -165,21 +156,11 @@ xlabel('Power Levels (kW)') % x-axis label
 ylabel('\sigmas from mean') % y-axis label
 legend('BT-12 (HL1)','BT-43 (HL2)','BT-41 (CL1)','BT-11 (CL2)')
 
-t1=[1:1:numel(dT1)];
-figure
-plot(t1,dT1,t1,dT2,t1,dT3,t1,dT4);
-title('dT vs Time')
-legend('BT-12 (HL1)','BT-43 (HL2)','BT-41 (CL1)','BT-11 (CL2)')
-
-t2=[1:1:numel(y1)];
-figure
-plot(t2,y1,t2,y2,t2, y3,t2, y4);
-title('dT vs. time averaging every 10 values') %value number depends on m
-ylabel('dT') % y-axis label
-legend('BT-12 (HL1)','BT-43 (HL2)','BT-41 (CL1)','BT-11 (CL2)')
 
 %The max standard deviation of T for all powers for each thermocouple 
-Vcomb=[max(v1_storer),max(v2_storer),max(v3_storer),max(v4_storer)]
+Vcomb=[max(v1_storer),max(v2_storer),max(v3_storer),max(v4_storer)];
+sixVcomb=6*[Vcomb]
 
 %The max standard deviation of dT for all powers for each thermocouple
-dTVcomb=[max(dTv1_storer),max(dTv2_storer),max(dTv3_storer),max(dTv4_storer)]
+dTVcomb=[max(dTv1_storer),max(dTv2_storer),max(dTv3_storer),max(dTv4_storer)];
+sixdTVcomb=6*[dTVcomb]
