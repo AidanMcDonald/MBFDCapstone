@@ -5,22 +5,26 @@ load('7kW_ss_data_split_power_w_headers.mat')
 
  %BT-12 (HL-1)
     A1 = data.BT_12;
+    A1(1:1000)=[]; %deleting first 1000 rows
     dT1=diff(A1)/.1;
     v1=std(A1)
 
     %BT-43 (HL2)
     A2 = data.BT_43;
+    A2(1:1000)=[]; %deleting first 1000 rows
     dT2=diff(A2)/.1;
     v2=std(A2)
     
     %BT-41 (CL1)
     A3 = data.BT_41;
+    A3(1:1000)=[]; %deleting first 1000 rows
     dT3=diff(A3)/.1;
     v3=std(A3)
 
     
     %BT-11 (CL2)
     A4 = data.BT_11;
+    A4(1:1000)=[]; %deleting first 1000 rows
     dT4=diff(A4)/.1;
     v4=std(A4)
 
@@ -39,7 +43,7 @@ vz2=std(z2)
 vz3=std(z3)
 vz4=std(z4)
 
-m = 10; % average every m values
+m = 30; % average every m values
 y1 = arrayfun(@(i) mean(dT1(i:i+m-1)),1:m:length(dT1)-m+1)'; % vector by averaging every m elements
 y2 = arrayfun(@(i) mean(dT2(i:i+m-1)),1:m:length(dT2)-m+1)'; % vector by averaging every m elements
 y3 = arrayfun(@(i) mean(dT3(i:i+m-1)),1:m:length(dT3)-m+1)'; % vector by averaging every m elements
@@ -56,12 +60,12 @@ title('T vs Time')
 legend('BT-12 (HL1)')
 
 figure
-plot(t4,A1/mean(A1),t4,A2/mean(A2),t4,A3/mean(A3),t4,A4/mean(A4));
+plot(t4,A1-mean(A1),t4,A2-mean(A2),t4,A3-mean(A3),t4,A4-mean(A4));
 title('Normalized T vs Time')
 legend('BT-12 (HL1)','BT-43 (HL2)','BT-41 (CL1)','BT-11 (CL2)')
 
 figure
-plot(t3,z1/mean(z1),t3,z2/mean(z2),t3,z3/mean(z3),t3,z4/mean(z4));
+plot(t3,z1-mean(z1),t3,z2-mean(z2),t3,z3-mean(z3),t3,z4-mean(z4));
 title('Normalized T vs Time averaging every 3 values')
 legend('BT-12 (HL1)','BT-43 (HL2)','BT-41 (CL1)','BT-11 (CL2)')
 
