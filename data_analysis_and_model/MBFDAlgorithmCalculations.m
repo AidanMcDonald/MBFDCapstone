@@ -3,9 +3,32 @@ P = [5:0.5:10];
 
 dv1_storer = zeros(1,numel(P));
 v1_storer=zeros(1,numel(P));
+dv2_storer = zeros(1,numel(P));
+v2_storer=zeros(1,numel(P));
+dv3_storer = zeros(1,numel(P));
+v3_storer=zeros(1,numel(P));
+dv4_storer = zeros(1,numel(P));
+v4_storer=zeros(1,numel(P));
 
 dTdv1_storer = zeros(1,numel(P));
 dTv1_storer=zeros(1,numel(P));
+dTdv2_storer = zeros(1,numel(P));
+dTv2_storer=zeros(1,numel(P));
+dTdv3_storer = zeros(1,numel(P));
+dTv3_storer=zeros(1,numel(P));
+dTdv4_storer = zeros(1,numel(P));
+dTv4_storer=zeros(1,numel(P));
+
+vy1_storer=zeros(1,numel(P));
+vy2_storer=zeros(1,numel(P));
+vy3_storer=zeros(1,numel(P));
+vy4_storer=zeros(1,numel(P));
+
+vz1_storer=zeros(1,numel(P));
+vz2_storer=zeros(1,numel(P));
+vz3_storer=zeros(1,numel(P));
+vz4_storer=zeros(1,numel(P));
+
 
 for i = 1:numel(P)
    p = P(i);
@@ -14,7 +37,9 @@ for i = 1:numel(P)
     load (filename)
     
     %BT-12 (HL-1)
+    
     A1 = data.BT_12;
+    A1(1:1000)=[]; %deleting first 1000 rows
     x1=max(A1);
     n1=min(A1);
     g1=mean(A1);
@@ -42,6 +67,7 @@ for i = 1:numel(P)
     
     %BT-43 (HL2)
     A2 = data.BT_43;
+    A2(1:1000)=[]; %deleting first 1000 rows
     x2=max(A2);
     n2=min(A2);
     g2=mean(A2);
@@ -69,6 +95,7 @@ for i = 1:numel(P)
     
     %BT-41 (CL1)
     A3 = data.BT_41;
+    A3(1:1000)=[]; %deleting first 1000 rows
     x3=max(A3);
     n3=min(A3);
     g3=mean(A3);
@@ -96,6 +123,7 @@ for i = 1:numel(P)
     
     %BT-11 (CL2)
     A4 = data.BT_11;
+    A4(1:1000)=[]; %deleting first 1000 rows
     x4=max(A4);
     n4=min(A4);
     g4=mean(A4);
@@ -119,22 +147,42 @@ for i = 1:numel(P)
     
     dTdv4_storer(i) = dTdv4;
     dTv4_storer(i)=dTv4;
+
+    
+    %TIME AVERAGING OF T AND DT
+    
+    m = 3; % average every m values
+    z1 = arrayfun(@(i) mean(A1(i:i+m-1)),1:m:length(A1)-m+1)'; % vector by averaging every m elements
+    z2 = arrayfun(@(i) mean(A2(i:i+m-1)),1:m:length(A2)-m+1)'; % vector by averaging every m elements
+    z3 = arrayfun(@(i) mean(A3(i:i+m-1)),1:m:length(A3)-m+1)'; % vector by averaging every m elements
+    z4 = arrayfun(@(i) mean(A4(i:i+m-1)),1:m:length(A4)-m+1)'; % vector by averaging every m elements
+    t3=[1:1:numel(z1)];
+    vz1=std(z1);
+    vz2=std(z2);
+    vz3=std(z3);
+    vz4=std(z4);
+    
+    vz1_storer(i) = vz1;
+    vz2_storer(i) = vz2;
+    vz3_storer(i) = vz3;
+    vz4_storer(i) = vz4;
+    
+    m = 60; % average every m values
+    y1 = arrayfun(@(i) mean(dT1(i:i+m-1)),1:m:length(dT1)-m+1)'; % vector by averaging every m elements
+    y2 = arrayfun(@(i) mean(dT2(i:i+m-1)),1:m:length(dT2)-m+1)'; % vector by averaging every m elements
+    y3 = arrayfun(@(i) mean(dT3(i:i+m-1)),1:m:length(dT3)-m+1)'; % vector by averaging every m elements
+    y4 = arrayfun(@(i) mean(dT4(i:i+m-1)),1:m:length(dT4)-m+1)'; % vector by averaging every m elements
+    vy1=std(y1);
+    vy2=std(y2);
+    vy3=std(y3);
+    vy4=std(y4);
+    
+    vy1_storer(i) = vy1;
+    vy2_storer(i) = vy2;
+    vy3_storer(i) = vy3;
+    vy4_storer(i) = vy4;
     
 end
-
-m = 3; % average every m values
-z1 = arrayfun(@(i) mean(A1(i:i+m-1)),1:m:length(A1)-m+1)'; % vector by averaging every m elements
-z2 = arrayfun(@(i) mean(A2(i:i+m-1)),1:m:length(A2)-m+1)'; % vector by averaging every m elements
-z3 = arrayfun(@(i) mean(A3(i:i+m-1)),1:m:length(A3)-m+1)'; % vector by averaging every m elements
-z4 = arrayfun(@(i) mean(A4(i:i+m-1)),1:m:length(A4)-m+1)'; % vector by averaging every m elements
-t3=[1:1:numel(z1)];
-
-
-m = 10; % average every m values
-y1 = arrayfun(@(i) mean(dT1(i:i+m-1)),1:m:length(dT1)-m+1)'; % vector by averaging every m elements
-y2 = arrayfun(@(i) mean(dT2(i:i+m-1)),1:m:length(dT2)-m+1)'; % vector by averaging every m elements
-y3 = arrayfun(@(i) mean(dT3(i:i+m-1)),1:m:length(dT3)-m+1)'; % vector by averaging every m elements
-y4 = arrayfun(@(i) mean(dT4(i:i+m-1)),1:m:length(dT4)-m+1)'; % vector by averaging every m elements
 
 figure
 plot(P,v1_storer,P, v2_storer,P,v3_storer,P,v4_storer);
@@ -165,21 +213,21 @@ xlabel('Power Levels (kW)') % x-axis label
 ylabel('\sigmas from mean') % y-axis label
 legend('BT-12 (HL1)','BT-43 (HL2)','BT-41 (CL1)','BT-11 (CL2)')
 
-t1=[1:1:numel(dT1)];
-figure
-plot(t1,dT1,t1,dT2,t1,dT3,t1,dT4);
-title('dT vs Time')
-legend('BT-12 (HL1)','BT-43 (HL2)','BT-41 (CL1)','BT-11 (CL2)')
-
-t2=[1:1:numel(y1)];
-figure
-plot(t2,y1,t2,y2,t2, y3,t2, y4);
-title('dT vs. time averaging every 10 values') %value number depends on m
-ylabel('dT') % y-axis label
-legend('BT-12 (HL1)','BT-43 (HL2)','BT-41 (CL1)','BT-11 (CL2)')
 
 %The max standard deviation of T for all powers for each thermocouple 
-Vcomb=[max(v1_storer),max(v2_storer),max(v3_storer),max(v4_storer)]
+Vcomb=[max(v1_storer),max(v2_storer),max(v3_storer),max(v4_storer)];
+sixVcomb=6*[Vcomb]
+
+%The max standard deviation of T for all powers for each thermocouple when
+%averaging every 10 values
+vzcomb=[max(vz1_storer),max(vz2_storer),max(vz3_storer),max(vz4_storer)];
+sixvzcomb=6*[vzcomb]
 
 %The max standard deviation of dT for all powers for each thermocouple
-dTVcomb=[max(dTv1_storer),max(dTv2_storer),max(dTv3_storer),max(dTv4_storer)]
+dTVcomb=[max(dTv1_storer),max(dTv2_storer),max(dTv3_storer),max(dTv4_storer)];
+sixdTVcomb=6*[dTVcomb]
+
+%The max standard deviation of dT for all powers for each thermocouple when
+%averaging every 10 values
+vycomb=[max(vy1_storer),max(vy2_storer),max(vy3_storer),max(vy4_storer)];
+sixvycomb=6*[vycomb]
