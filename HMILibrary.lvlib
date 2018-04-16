@@ -55,5 +55,6 @@
 		<Property Name="type" Type="Str">Network</Property>
 		<Property Name="typeDesc" Type="Bin">&amp;Q#!!!!!!!)!"1!&amp;!!!-!%!!!@````]!!!!"!!%!!!""01!!!"=!A!!!!!!#!!V!#A!(4H6N:8*J9Q!=1%!!!@````]!!!^"=H*B?3"P:C"%&lt;X6C&lt;'5!!1!"!!!!!!!!!!!!!!!!</Property>
 	</Item>
+	<Item Name="Testing.vi" Type="VI" URL="../Testing.vi"/>
 	<Item Name="VirtualPowerPlantWithModelBasedFaultDetection.vi" Type="VI" URL="../VirtualPowerPlantWithModelBasedFaultDetection.vi"/>
 </Library>
