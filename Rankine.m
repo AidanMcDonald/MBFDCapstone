@@ -6,12 +6,12 @@ function output = Rankine(input)
 if(isfield(input,'P_5'))
     P_5 = input.P_5;
 else
-    P_5 = 1000; % [Pa]
+    P_5 = 7093; % [Pa]
 end
 if(isfield(input,'P_1'))
     P_1 = input.P_1;
 else
-    P_1 = 1E6; % [Pa]
+    P_1 = 6154480.5; % [Pa]
 end
 
 % Turbine inlet temp/heat exchanger output temp
@@ -20,7 +20,7 @@ if(isfield(input,'T_4'))
 elseif(isfield(input,'T_air,in') && isfield(input,'deltaT_pp'))
     T_4 = input.T_air,in - deltaT_pp;
 else
-    T_4 = 1000; % [K]
+    T_4 = 549; % [K]
 end
 
 % Turbine and pump efficiencies
@@ -49,11 +49,11 @@ T_5 = XSteam('T_ph',P_5/10^5,h_5)+273;
 P_6 = P_5;
 h_6 = XSteam('h_px',P_6/10^5,0);
 T_6 = XSteam('Tsat_p',P_6/10^5)+273;
-v_6 = XSteam('vL_p',P_6/10^5);
+v_6 = XSteam('vL_p',P_6/10^5)/1000;
 
-h_1s = h_6+v_6*(P_1-P_6); % Need to check units
+h_1s = h_6+v_6*(P_1-P_6); 
 
-h_1 = h_6+(h_1s-h_6)/eta_P;
+h_1 = h_6+(h_1s-h_6)*eta_P;
 T_1 = XSteam('T_ph',P_1/10^5,h_1)+273;
 
 %% Assemble Output

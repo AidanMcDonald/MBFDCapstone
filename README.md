@@ -1,5 +1,5 @@
 # MBFDCapstone
-Repository for code related to the model-based fault detection capstone project
+Repository for code related to the model-based fault detection capstone project.
 
 To set up your clone of this repository:
 1. Download and install git (from https://git-scm.com/downloads) on your machine.
